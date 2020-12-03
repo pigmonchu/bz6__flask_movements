@@ -5,7 +5,8 @@ import random
 
 @app.route('/')
 def listaMovimientos():
-    return render_template("movementsList.html" )
+    texto= 'Hola'
+    return render_template("movementsList.html",variable=texto )
 
 @app.route('/dado')
 def tiradado():
