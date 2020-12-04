@@ -3,25 +3,22 @@
 {% block title %} <Romanos></Romanos> {% endblock %}
 
 {% block mi_precioso_bloque_de_formato %}
-    <h1>Ingresos mensuales</h1>
+    <h1>Ingresos mensuales <a href="creaalta">Nuevo</a></h1>
     <table>
         <tr>
             <th>Fecha</th>
             <th>Concepto</th>
             <th>Importe/Guita</th>
         </tr>
+    {% for registro in datos %}
         <tr>
-            <td>1/12/2020</td>
-            <td>Sueldo Diciembre</td>
-            <td>2000 €</td>
+            <td>{{ registro.fecha }}</td>
+            <td>{{ registro.concepto }}</td>
+            <td>{{ registro.valor }}€</td>
         </tr>
+    {% endfor %}
         <tr>
-            <td>4/12/2020</td>
-            <td>Alquiler garaje</td>
-            <td>70 €</td>
-        </tr>
-        <tr>
-            <td colspan="3">Total: 2070 €</td>
+            <td colspan="3">Total: {{total}} {{datos|sum(attribute='valor')}}€</td>
         </tr>
     </table>
 {% endblock %}
