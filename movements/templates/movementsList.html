@@ -12,13 +12,13 @@
         </tr>
     {% for registro in datos %}
         <tr>
-            <td>{{ registro.fecha }}</td>
-            <td>{{ registro.concepto }}</td>
-            <td>{{ registro.valor }}€</td>
+            <td>{{ registro[0] }}</td>
+            <td>{{ registro[1] }}</td>
+            <td>{{ registro[2] }}€</td>
         </tr>
     {% endfor %}
         <tr>
-            <td colspan="3">Total: {{total}} {{datos|sum(attribute='valor')}}€</td>
+            <td colspan="3">Total: {{total}}€</td>
         </tr>
     </table>
 {% endblock %}

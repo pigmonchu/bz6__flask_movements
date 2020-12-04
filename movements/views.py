@@ -1,17 +1,20 @@
 from movements import app
 from flask import render_template
 import csv
-from movements.entities import Ingreso
 
 @app.route('/')
 def listaIngresos():
     fIngresos = open("movements/data/basededatos.csv", "r")
     csvReader = csv.reader(fIngresos, delimiter=',', quotechar='"')
-    ingresos = list(map(lambda item: Ingreso(item[0], item[1], item[2]), csvReader))
+    ingresos = list(csvReader)
 
     print(ingresos)
 
-    return render_template("movementsList.html",datos=ingresos)
+    total = 0
+    for ingreso in ingresos:
+        total += float(ingreso[2])
+
+    return render_template("movementsList.html",datos=ingresos, total=total)
 
 @app.route('/creaalta')
 def nuevoIngreso():
