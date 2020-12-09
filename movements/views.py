@@ -1,5 +1,5 @@
 from movements import app
-from flask import render_template, request
+from flask import render_template, request, url_for, redirect
 import csv
 
 @app.route('/')
@@ -19,22 +19,12 @@ def listaIngresos():
 @app.route('/creaalta', methods=['GET', 'POST'])
 def nuevoIngreso():
     if request.method == 'POST':
-        errores = valida(request.form)
-        if len(errores)>0:
-            return render_template("alta.html", errores=errores, datos=request.form)
+        fIngresos = open("movements/data/basededatos.csv", "a", newline="")
+        csvWriter = csv.writer(fIngresos, delimiter=',', quotechar='"')
+        csvWriter.writerow([request.form.get('fecha'), request.form.get('concepto'), request.form.get('cantidad')])
+        return redirect(url_for('listaIngresos'))
+        
 
-        <graba_datos>
 
-        redirect('/')
-    
-    render_template("alta.html")
+    return render_template("alta.html")
 
-def valida(f):
-    result = {}
-    if f.get('fecha') <no es fecha>:
-        result['fecha'] = 'La fecha no es valida'
-    
-    if f.get("cantidad") no es numero o <= 0:
-        result['cantidad'] = "Cantidad debe ser numérica mayor que cero"
-
-    return result
