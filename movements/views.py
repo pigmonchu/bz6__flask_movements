@@ -8,7 +8,7 @@ def listaIngresos():
     conn = sqlite3.connect('movements/data/basededatos.db')
     c = conn.cursor()
 
-    c.execute('SELECT fecha, concepto, cantidad FROM movimientos;')
+    c.execute('SELECT fecha, concepto, cantidad, id FROM movimientos;')
 
 
     '''
@@ -55,3 +55,10 @@ def nuevoIngreso():
 
     return render_template("alta.html")
 
+
+@app.route("/modifica/<id>", methods=['GET', 'POST'])
+def modificaIngreso(id):
+    '''
+        1. Consulta el movimiento por id 
+        2. render_template(modifica.html, moviento=el resultado de la consulta anterior"
+    '''
