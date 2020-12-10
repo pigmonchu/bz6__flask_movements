@@ -1,14 +1,22 @@
 from movements import app
 from flask import render_template, request, url_for, redirect
 import csv
+import sqlite3
 
 @app.route('/')
 def listaIngresos():
+    conn = sqlite3.connect('movements/data/basededatos.db')
+    c = conn.cursor()
+
+    c.execute('SELECT fecha, concepto, cantidad FROM movimientos;')
+
+
+    '''
     fIngresos = open("movements/data/basededatos.csv", "r")
     csvReader = csv.reader(fIngresos, delimiter=',', quotechar='"')
     ingresos = list(csvReader)
-
-    print(ingresos)
+    '''
+    ingresos = c.fetchall()
 
     total = 0
     for ingreso in ingresos:
