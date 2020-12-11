@@ -3,26 +3,46 @@ from flask import render_template, request, url_for, redirect
 import csv
 import sqlite3
 
-@app.route('/')
-def listaIngresos():
-    conn = sqlite3.connect('movements/data/basededatos.db')
+DBFILE = 'movements/data/DBFLASK.db'
+
+def consulta(query, params=()):
+    conn = sqlite3.connect(DBFILE)
     c = conn.cursor()
 
-    c.execute('SELECT fecha, concepto, cantidad, id FROM movimientos;')
+    c.execute(query, params)
+    
+    columnNames = []
+    for columnName in c.description:
+        columnNames.append(columnName[0])
 
+    listaDeDiccionarios = []
+    filas = c.fetchall()
 
-    '''
-    fIngresos = open("movements/data/basededatos.csv", "r")
-    csvReader = csv.reader(fIngresos, delimiter=',', quotechar='"')
-    ingresos = list(csvReader)
-    '''
-    ingresos = c.fetchall()
+    for fila in filas:
+        d = {}
+        for ix, columnName in enumerate(columnNames):
+            d[columnName] = fila[ix]
+        listaDeDiccionarios.append(d)
+
+    conn.commit()
+    conn.close()
+
+    if len(listaDeDiccionarios) == 1:
+        return listaDeDiccionarios[0]
+    elif len(listaDeDiccionarios) == 0:
+        return None
+    else:
+        return listaDeDiccionarios
+
+@app.route('/')
+def listaIngresos():
+
+    ingresos = consulta('SELECT fecha, concepto, cantidad, id FROM movimientos;')
 
     total = 0
     for ingreso in ingresos:
-        total += float(ingreso[2])
+        total += float(ingreso['cantidad'])
 
-    conn.close()
 
     return render_template("movementsList.html",datos=ingresos, total=total)
 
@@ -31,10 +51,7 @@ def nuevoIngreso():
     if request.method == 'POST':
         # iNSERT INTO movimientos (cantidad, concepto, fecha) VALUES (1500, "Paga extra", "2020-12-16" )
 
-        conn = sqlite3.connect('movements/data/basededatos.db')
-        c = conn.cursor()
-
-        c.execute('INSERT INTO movimientos (cantidad, concepto, fecha) VALUES (?, ? ,? );', 
+        consulta('INSERT INTO movimientos (cantidad, concepto, fecha) VALUES (?, ? ,? );', 
                  (
                     float(request.form.get('cantidad')),
                     request.form.get('concepto'),
@@ -42,13 +59,6 @@ def nuevoIngreso():
                  )
         )
 
-        conn.commit()
-        conn.close()
-        '''   
-        fIngresos = open("movements/data/basededatos.csv", "a", newline="")
-        csvWriter = csv.writer(fIngresos, delimiter=',', quotechar='"')
-        csvWriter.writerow([request.form.get('fecha'), request.form.get('concepto'), request.form.get('cantidad')])
-        '''
         return redirect(url_for('listaIngresos'))
         
 
@@ -58,7 +68,24 @@ def nuevoIngreso():
 
 @app.route("/modifica/<id>", methods=['GET', 'POST'])
 def modificaIngreso(id):
-    '''
-        1. Consulta el movimiento por id 
-        2. render_template(modifica.html, moviento=el resultado de la consulta anterior"
-    '''
+    conn = sqlite3.connect(DBFILE)
+    c = conn.cursor()
+
+    if request.method == 'GET':
+
+        registro = consulta('SELECT fecha, concepto, cantidad, id FROM movimientos where id = ?', (id,))
+
+        return render_template("modifica.html", registro=registro)
+    else:
+        consulta('UPDATE movimientos SET fecha = ?, concepto= ?, cantidad = ? WHERE id = ?',
+                  (request.form.get('fecha'),
+                   request.form.get('concepto'),
+                   float(request.form.get('cantidad')),
+                   id
+                  )
+        )
+
+        return redirect(url_for("listaIngresos"))
+ 
+
+
