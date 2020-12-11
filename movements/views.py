@@ -8,15 +8,31 @@ DBFILE = 'movements/data/DBFLASK.db'
 def consulta(query, params=()):
     conn = sqlite3.connect(DBFILE)
     c = conn.cursor()
+    '''
+    'SELECT * FROM TABLA' -> [(),(), (),]
+    'SELECT * FROM TABLA VACIA ' -> []
+    'INSERT ...' -> []
+    'UPDATE ...' -> []
+    'DELETE ...' -> []
+    '''
 
     c.execute(query, params)
-    
+    conn.commit()
+
+    filas = c.fetchall()
+    print(filas)
+
+    conn.close()
+
+
+    if len(filas) == 0:
+        return filas
+
     columnNames = []
     for columnName in c.description:
         columnNames.append(columnName[0])
 
     listaDeDiccionarios = []
-    filas = c.fetchall()
 
     for fila in filas:
         d = {}
@@ -24,15 +40,7 @@ def consulta(query, params=()):
             d[columnName] = fila[ix]
         listaDeDiccionarios.append(d)
 
-    conn.commit()
-    conn.close()
-
-    if len(listaDeDiccionarios) == 1:
-        return listaDeDiccionarios[0]
-    elif len(listaDeDiccionarios) == 0:
-        return None
-    else:
-        return listaDeDiccionarios
+    return listaDeDiccionarios
 
 @app.route('/')
 def listaIngresos():
@@ -50,6 +58,13 @@ def listaIngresos():
 def nuevoIngreso():
     if request.method == 'POST':
         # iNSERT INTO movimientos (cantidad, concepto, fecha) VALUES (1500, "Paga extra", "2020-12-16" )
+
+        cantidad = request.form.get('cantidad')
+        try:
+            cantidad = float(cantidad)
+        except ValueError:
+            msgError = 'Cantidad debe ser numérico'
+            return render_template("alta", errores = msgError)
 
         consulta('INSERT INTO movimientos (cantidad, concepto, fecha) VALUES (?, ? ,? );', 
                  (
@@ -73,7 +88,7 @@ def modificaIngreso(id):
 
     if request.method == 'GET':
 
-        registro = consulta('SELECT fecha, concepto, cantidad, id FROM movimientos where id = ?', (id,))
+        registro = consulta('SELECT fecha, concepto, cantidad, id FROM movimientos where id = ?', (id,))[0] 
 
         return render_template("modifica.html", registro=registro)
     else:
