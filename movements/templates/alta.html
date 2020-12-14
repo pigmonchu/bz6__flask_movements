@@ -7,7 +7,7 @@
     {{ form.hidden_tag() }}
     <div class="field">
         {{ form.fecha.label }}
-        {{ form.fecha(type="date") }}
+        {{ form.fecha(type="date", class="semi") }}
         {% for error in form.fecha.errors %}
             <p class="err-msg">
                 {{ error }}
