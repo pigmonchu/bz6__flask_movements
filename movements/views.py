@@ -63,22 +63,19 @@ def nuevoIngreso():
     if request.method == 'POST':
         # iNSERT INTO movimientos (cantidad, concepto, fecha) VALUES (1500, "Paga extra", "2020-12-16" )
 
-        cantidad = request.form.get('cantidad')
-        try:
-            cantidad = float(cantidad)
-        except ValueError:
-            msgError = 'Cantidad debe ser numérico'
-            return render_template("alta", errores = msgError)
+        if form.validate():
+            consulta('INSERT INTO movimientos (cantidad, concepto, fecha) VALUES (?, ? ,? );', 
+                    (
+                        form.cantidad.data,
+                        form.concepto.data,
+                        form.fecha.data
+                    )
+            )
 
-        consulta('INSERT INTO movimientos (cantidad, concepto, fecha) VALUES (?, ? ,? );', 
-                 (
-                    float(request.form.get('cantidad')),
-                    request.form.get('concepto'),
-                    request.form.get('fecha')
-                 )
-        )
-
-        return redirect(url_for('listaIngresos'))
+            return redirect(url_for('listaIngresos'))
+        else:
+            return render_template("alta.html", form=form)
+            
 
     return render_template("alta.html", form=form)
 
