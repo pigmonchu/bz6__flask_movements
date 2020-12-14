@@ -1,9 +1,10 @@
 from movements import app
+from movements.forms import MovementForm
 from flask import render_template, request, url_for, redirect
 import csv
 import sqlite3
 
-DBFILE = 'movements/data/DBFLASK.db'
+DBFILE = app.config['DBFILE']
 
 def consulta(query, params=()):
     conn = sqlite3.connect(DBFILE)
@@ -56,6 +57,9 @@ def listaIngresos():
 
 @app.route('/creaalta', methods=['GET', 'POST'])
 def nuevoIngreso():
+
+    form = MovementForm()
+    
     if request.method == 'POST':
         # iNSERT INTO movimientos (cantidad, concepto, fecha) VALUES (1500, "Paga extra", "2020-12-16" )
 
@@ -75,10 +79,8 @@ def nuevoIngreso():
         )
 
         return redirect(url_for('listaIngresos'))
-        
 
-
-    return render_template("alta.html")
+    return render_template("alta.html", form=form)
 
 
 @app.route("/modifica/<id>", methods=['GET', 'POST'])

@@ -4,5 +4,4 @@ movements/__pycache__/
 .env
 .vscode/
 movements/data/
-movements/data/
-
+config.py
