@@ -6,15 +6,15 @@
 <form action="creaalta" method="post">
     <div class="field">
         {{ form.fecha.label }}
-        {{ form.fecha }}
+        {{ form.fecha(type="date") }}
     </div>
     <div class="field">
         {{ form.concepto.label }}
-        {{ form.concepto }}
+        {{ form.concepto(placeholder='En que te lo has gastado') }}
     </div>
     <div class="field">
         {{ form.cantidad.label }}
-        {{ form.cantidad }}
+        {{ form.cantidad(placeholder='Escribe un número') }}
     </div>
     <div class="field">
         {{ form.submit }}
