@@ -16,3 +16,4 @@ class MovementForm(FlaskForm):
     cantidad = FloatField('Cantidad', validators=[DataRequired()])
 
     submit = SubmitField('Aceptar')
+

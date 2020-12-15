@@ -3,19 +3,21 @@ from movements.forms import MovementForm
 from flask import render_template, request, url_for, redirect
 import csv
 import sqlite3
+from datetime import date
 
 DBFILE = app.config['DBFILE']
 
 def consulta(query, params=()):
+    '''
+        'SELECT * FROM TABLA' -> [(),(), (),]
+        'SELECT * FROM TABLA VACIA ' -> []
+        'INSERT ...' -> []
+        'UPDATE ...' -> []
+        'DELETE ...' -> []
+    '''
+
     conn = sqlite3.connect(DBFILE)
     c = conn.cursor()
-    '''
-    'SELECT * FROM TABLA' -> [(),(), (),]
-    'SELECT * FROM TABLA VACIA ' -> []
-    'INSERT ...' -> []
-    'UPDATE ...' -> []
-    'DELETE ...' -> []
-    '''
 
     c.execute(query, params)
     conn.commit()
@@ -80,26 +82,32 @@ def nuevoIngreso():
     return render_template("alta.html", form=form)
 
 
+
 @app.route("/modifica/<id>", methods=['GET', 'POST'])
 def modificaIngreso(id):
-    conn = sqlite3.connect(DBFILE)
-    c = conn.cursor()
-
+    
     if request.method == 'GET':
 
         registro = consulta('SELECT fecha, concepto, cantidad, id FROM movimientos where id = ?', (id,))[0] 
+        registro['fecha'] = date.fromisoformat(registro['fecha'])
+        form = MovementForm(data=registro)
 
-        return render_template("modifica.html", registro=registro)
+        return render_template("modifica.html", form=form, id=id)
+
+
     else:
-        consulta('UPDATE movimientos SET fecha = ?, concepto= ?, cantidad = ? WHERE id = ?',
-                  (request.form.get('fecha'),
-                   request.form.get('concepto'),
-                   float(request.form.get('cantidad')),
-                   id
-                  )
-        )
+        form = MovementForm()
+        if form.validate():
+            consulta('UPDATE movimientos SET fecha = ?, concepto= ?, cantidad = ? WHERE id = ?',
+                    (request.form.get('fecha'),
+                    request.form.get('concepto'),
+                    float(request.form.get('cantidad')),
+                    id
+                    )
+            )
 
-        return redirect(url_for("listaIngresos"))
- 
+            return redirect(url_for("listaIngresos"))
+        else:
+            return render_template("modifica.html", form=form, id=id)
 
 
