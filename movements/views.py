@@ -55,7 +55,7 @@ def listaIngresos():
         total += float(ingreso['cantidad'])
 
 
-    return render_template("movementsList.html",datos=ingresos, total=total)
+    return render_template("movementsList.html", datos=ingresos, total=total, _title="Todos los movimientos")
 
 @app.route('/creaalta', methods=['GET', 'POST'])
 def nuevoIngreso():

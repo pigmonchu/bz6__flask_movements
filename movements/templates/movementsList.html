@@ -1,25 +1,33 @@
 {% extends 'base.html' %}
 
-{% block title %} <Romanos></Romanos> {% endblock %}
+{% block title %} Tus movimientos {% endblock %}
 
-{% block mi_precioso_bloque_de_formato %}
-    <h1>Ingresos mensuales <a href="creaalta">Nuevo</a></h1>
+{% block content %}
+    <div class="title grid">
+        <h1 class="title_text">Todos los movimientos</h1>
+        <div class="title_button-new">
+            <a role="button" href="/creaalta">Nuevo</a>
+        </div>
+    </div>
     {% if datos|length > 0 %}
         <table>
             <tr>
-                <th>Fecha</th>
-                <th>Concepto</th>
-                <th>Importe/Guita</th>
+                <th class="fecha">Fecha</th>
+                <th class="concepto">Concepto</th>
+                <th class="importe">Importe/Guita</th>
+                <th class="acciones" colspan="2">Acciones</th>
             </tr>
         {% for registro in datos %}
             <tr>
-                <td><a href="modifica/{{ registro['id'] }}">{{ registro['fecha'] }}</a></td>
+                <td>{{ registro['fecha'] }}</td>
                 <td>{{ registro['concepto'] }}</td>
-                <td>{{ registro['cantidad'] }}€</td>
+                <td class="importe">{{ registro['cantidad'] }}€</td>
+                <td><a href="/modifica/{{ registro['id'] }}"><i class="fa fa-pencil"></i></a></td>
+                <td><a href="/borra/{{ registro['id']}}"><i class="fa fa-times"></i></a></td>
             </tr>
         {% endfor %}
             <tr>
-                <td colspan="3">Total: {{total}}€</td>
+                <td class="total" colspan="3">Total: {{total}}€</td>
             </tr>
         </table>
     {% else %}

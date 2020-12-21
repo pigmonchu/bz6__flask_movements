@@ -5,18 +5,27 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Mi Kakebo - {% block title %}{% endblock %}</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">        
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/static/css/font-awesome.css">
+        <link rel="stylesheet" href="/static/css/pico.css">
+        <link rel="stylesheet" href="/static/css/styles.css"> 
     </head>
     <body>
-        <header>
-            <p>Boot Z 6 - Kakebo</p>
+        <header data-theme="dark">
+            <div class="header_kakebo">Boot Z 6 - Kakebo</div>
+            <nav>
+                <ul>
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="/creaalta">Alta</a></li>
+                </ul>
+            </nav>
         </header>
 
-        <section class="container">
-            {% block mi_precioso_bloque_de_formato %}{% endblock %}
-        </section>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
 
-        <footer>
+        <footer data-theme="dark">
             &copy; 2020 - 2021. Todos los derechos reservados
         </footer>
     </body>

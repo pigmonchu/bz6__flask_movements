@@ -2,12 +2,12 @@
 
 {% block title %} <Romanos></Romanos> {% endblock %}
 
-{% block mi_precioso_bloque_de_formato %}
+{% block content %}
 <form action="creaalta" method="post">
     {{ form.hidden_tag() }}
     <div class="field">
         {{ form.fecha.label }}
-        {{ form.fecha(type="date", class="semi") }}
+        {{ form.fecha(type="date", class="error-data" if form.fecha.errors else "") }}
         {% for error in form.fecha.errors %}
             <p class="err-msg">
                 {{ error }}
@@ -16,7 +16,7 @@
     </div>
     <div class="field">
         {{ form.concepto.label }}
-        {{ form.concepto(placeholder='En que te lo has gastado') }}
+        {{ form.concepto(placeholder='En que te lo has gastado', class="error-data" if form.concepto.errors else "") }}
         {% for error in form.concepto.errors %}
             <p class="err-msg">
                 {{ error }}
@@ -25,7 +25,7 @@
     </div>
     <div class="field">
         {{ form.cantidad.label }}
-        {{ form.cantidad(placeholder='Escribe un número') }}
+        {{ form.cantidad(placeholder='Escribe un número', class="error-data" if form.cantidad.errors else "") }}
         {% for error in form.cantidad.errors %}
             <p class="err-msg">
                 {{ error }}

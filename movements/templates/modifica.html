@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %} Modifica{% endblock %}
+{% block title %} Modifica movimiento {% endblock %}
 
-{% block mi_precioso_bloque_de_formato %}
+{% block content %}
+<div class="title grid">
+    <h1 class="title_text">Modificar movimiento</h1>
+</div>
+
 <form action="/modifica/{{id}}" method="post">
     {{ form.hidden_tag() }}
     <div class="field">
         {{ form.fecha.label }}
-        {{ form.fecha }}
+        {{ form.fecha(type="date", class="error-data" if form.fecha.errors else "") }}
         {% for error in form.fecha.errors %}
             <p class="err-msg">
                 {{ error }}
@@ -16,7 +20,7 @@
     </div>
     <div class="field">
         {{ form.concepto.label }}
-        {{ form.concepto(class="grande") }}
+        {{ form.concepto(class="error-data" if form.concepto.errors else "") }}
         {% for error in form.concepto.errors %}
             <p class="err-msg">
                 {{ error }}
@@ -25,7 +29,7 @@
     </div>
     <div class="field">
         {{ form.cantidad.label }}
-        {{ form.cantidad }}
+        {{ form.cantidad(type="number", step=0.01, class="error-data" if form.cantidad.errors else "") }}
         {% for error in form.cantidad.errors %}
             <p class="err-msg">
                 {{ error }}
